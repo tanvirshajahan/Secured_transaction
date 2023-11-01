@@ -31,12 +31,12 @@ export const DetailScreen = () => {
             Alert.alert('Authenticated', 'Welcome back!')
 
         }catch (error){
-            Alert.alert('Error', 'An error occured')
+            Alert.alert('Error', 'An error occured '+error)
 
         }
 
     }
-    onFaceId
+    onFaceId();
 
     return(
         <View style={{flex:1}}>

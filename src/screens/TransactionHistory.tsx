@@ -17,7 +17,6 @@ const {width } = Dimensions.get('window');
 export const TransactionHistory = () => {
 
     const customData = require('../utils/data.json') ;
-    console.log('za',customData)
 
     return(
         <View style={{flex:1}}>

@@ -27,7 +27,7 @@
       "infoPlist": {
         "NSFaceIDUsageDescription": "Allow Secured_Transaction to use Face ID."
       },
-      "bundleIdentifier": "com.secured_transaction.ios"
+      "bundleIdentifier": "com.securedtransaction.ios"
     },
     "android": {
       "adaptiveIcon": {
@@ -38,7 +38,7 @@
         "android.permission.USE_BIOMETRIC",
         "android.permission.USE_FINGERPRINT"
       ],
-      "package": "com.secured_transaction"
+      "package": "com.securedtransaction"
     },
     "web": {
       "favicon": "./assets/favicon.png"
