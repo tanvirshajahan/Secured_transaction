@@ -1,0 +1,22 @@
+{
+  "cli": {
+    "version": ">= 0.49.0"
+  },
+  "build": {
+    "development": {
+      "releaseChannel": "dev",
+    "env": {
+        "API_URL": "https://vebo-connect-server-test.herokuapp.com"
+      }
+    },
+    "production": {
+      "releaseChannel": "prod",
+      "env": {
+        "API_URL": "https://connect.vebo.com.my"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

@@ -1,5 +1,13 @@
 {
   "expo": {
+    "plugins": [
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow Secured_Transaction to use Face ID."
+        }
+      ]
+    ],
     "name": "Secured_Transaction",
     "slug": "Secured_Transaction",
     "version": "1.0.0",
@@ -15,16 +23,30 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "Allow Secured_Transaction to use Face ID."
+      },
+      "bundleIdentifier": "com.secured_transaction.ios"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT"
+      ],
+      "package": "com.secured_transaction"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c04a0f4a-396e-43e4-b24b-7ad95092b553"
+      }
     }
   }
 }

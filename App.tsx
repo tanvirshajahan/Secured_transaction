@@ -3,7 +3,8 @@ import { TransactionHistory } from './src/screens/TransactionHistory';
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { DetailScreen } from './src/screens/DetailScreen';
-
+import { Provider } from 'react-redux';
+import { store } from './src/redux';
 
 const switchNavigator = createSwitchNavigator({
   homeStack: {
@@ -26,7 +27,9 @@ const AppNavigation =createAppContainer (switchNavigator);
 
 export default function App() {
   return (
-   <AppNavigation/>
+    // <Provider store={store} >
+      <AppNavigation/>
+    // </Provider>
   );
 }
 

@@ -1,13 +1,11 @@
 import React from 'react'
-import {View, FlatList, Text, StyleSheet,Dimensions, Image, TouchableOpacity} from 'react-native'
+import {View, FlatList, Text, StyleSheet,Dimensions, Image, TouchableOpacity, Button} from 'react-native'
 import Loading from '../utils/Loader';
 import { useNavigation } from '../utils';
-import { FAB } from 'react-native-elements';
-
-
+// import { ListContent } from '../components/ListContent';
+import Icon from 'react-native-vector-icons/Entypo';
+import { TransactionDetails } from '../redux/models';
 const {width } = Dimensions.get('window');
-
-
 
   type ItemProps = {title: string};
 
@@ -18,7 +16,8 @@ const {width } = Dimensions.get('window');
   );
 export const TransactionHistory = () => {
 
-    const customData = require('../utils/data.json');
+    const customData = require('../utils/data.json') ;
+    console.log('za',customData)
 
     return(
         <View style={{flex:1}}>
@@ -33,7 +32,7 @@ export const TransactionHistory = () => {
                     style={{ width: '100%',height:10,zIndex:-10}}
                     keyExtractor={(item, index) => index.toString()}
                     data={customData}
-                    renderItem={({ item }) => <ListContent item ={item}/> }
+                    renderItem={({ item  }) => <ListContent item={item} /> }
                     // ItemSeparatorComponent={() => <View style={styles.separator} />}
                     //onScrollEndDrag={() => this.loadMoreData()}
                     // ListFooterComponent={this.renderFooter.bind(this)}
@@ -41,7 +40,10 @@ export const TransactionHistory = () => {
                     onEndReachedThreshold={0.5}
                     // onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false; }}
                 />
-                    
+                {/* FAB */}
+                <TouchableOpacity style={styles.fab} onPress={()=>console.log('123')}>
+                    <Icon name='plus' size={60}  />
+                </TouchableOpacity>
                 </View>
             </View>
             }
@@ -50,50 +52,16 @@ export const TransactionHistory = () => {
 
 }
 
-function ListContent(item: any){
+function ListContent({item}: any){
     const { navigate } = useNavigation()
-    console.log('123', item)
-
-    let {name,time,currency,type,date} = item.item;
-    console.log('123',name)
-
-    // var date =item.item.startDateTime;
-    // var status =item.item.status.key;
-    // var statusName =item.item.status.value;
-    // var brand =item.item.customerVehicleData.vehicleData.brand;
-    // var model =item.item.customerVehicleData.vehicleData.model;
-    // var series =item.item.customerVehicleData.vehicleData.series;
-    // var registationNumber =item.item.customerVehicleData.registrationNumber;
-
-    // console.log(item.item.vehicleData.brand , 'item valss')
-
-    //var reasonRejection =status === 'Rejected'?item.item.reasonRejection.value: '';
-    // var reasonRejection ='';
-
-    // var finalDateTime = (date);
-    // var color,backgroundColor;
-    // switch(status)
-    // {
-    //     case 'INPROGRESS':
-    //         color='#000';
-    //         backgroundColor='#E3E3E3';
-    //     break;
-    //     case 'CANCELLED':
-    //         color='#fff';
-    //         backgroundColor='#EB0024';
-    //     break;
-    //     case 'COMPLETED':
-    //         color='#fff';
-    //         backgroundColor='#31BC7C';
-    //     break;
-    // }
+    let {name,time,currency,type,date,description} = item;
 
 return(
     <TouchableOpacity onPress={()=> 
         {
             // storage.setItem('DetailedInfo',JSON.stringify(item));
             // goToScreen(item.props,'Service History Details');
-            navigate('transactionDetails');
+            navigate('transactionDetails',item);
 
             // item.props.navigate('Transaction Details', {
             //     value: item.props,
@@ -106,6 +74,7 @@ return(
                 <View style={{ flex: 2,flexDirection: 'column',justifyContent: 'space-evenly', marginLeft:27}}>
                     {/* <Text  style={{flex:2,}}>{name == 'Rejected'? 'Unsuccessful': statusName}</Text> */}
                     <Text >{name}</Text>
+                    <Text >{description}</Text>
 
                     <Text  >{date}</Text>
                 </View>  
@@ -151,5 +120,15 @@ const styles = StyleSheet.create({
         alignSelf:'center', 
         // borderWidth: 2, 
         borderRadius:Math.round(6)
+    },
+    fab :
+    {
+        width: 60,  
+        height: 60,   
+        borderRadius: 30,            
+        backgroundColor: '#ee6e73',                                    
+        position: 'absolute',                                          
+        bottom: 10,                                                    
+        right: 10, 
     }
 })
