@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {View, Text, StyleSheet, Dimensions} from 'react-native'
 import Loading from '../utils/Loader';
 import {onFaceId} from '../utils/Authentication'
-import { ApplicationState, UserState } from '../redux';
+import { ApplicationState, TransactionDetails, UserState, onUpdateVisible } from '../redux';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/Entypo';
 import { useNavigation } from '../utils';
@@ -15,30 +15,78 @@ interface TransactionDetailsProps{
 }
 
 const _DetailScreen: React.FC<TransactionDetailsProps> = (props) => {
-    const { navigate } = useNavigation();
+    const { getParam, goBack } = props.navigation;
+    const [isUnlocked, setIsUnlocked] = useState(false);
+    const details = getParam('details') as TransactionDetails
 
     const {visible} =props.UserReducer
-    if (!visible) 
-        // onFaceId();
+
+    async function checking(){
+        if (!visible){
+            const res = await onFaceId();
+            if(res){
+                setIsUnlocked(true)
+                onUpdateVisible(true)
+            }else{
+                setIsUnlocked(false)
+            }
+        }else{
+            setIsUnlocked(true)
+        }
+    }
+       
+    useEffect(() => {
+        checking()
+    }, [])
 
     return(
         <View style={{flex:1}}>
-            {false?<Loading loading="true"/>
+            {!isUnlocked?<Loading loading="true"/>
             :
             <View style={styles.container}>
                 <View style={styles.navigation}>
                     <Icon  size={30}style={styles.closeBtn} name='chevron-left' onPress={()=>
                     {
-                          props.navigation.goBack()
+                          goBack()
 
                     }} />
                     <Text style={{textAlign: 'center',fontSize:20, flex:10,}}> Transaction Details</Text>
                 </View>
                 <View style={styles.body}>
-                    <View style={styles.divider}/>
-                    {/* <View style={{height:200,backgroundColor }}/> */}
-                    <Text>asd</Text>
+                    {details.type=='debit'?
+                        <Text style={styles.amountDebit}>+RM{details.currency}</Text>
+                    :
+                        <Text style={styles.amount}>-RM{details.currency}</Text>
+                    }
+                    <View style={styles.divider}/> 
+                    <View style={styles.itemDetails}>
+                        <Text style={styles.itemLabel}>Description</Text>
+                        <Text style={styles.itemvalue} >{details.description}</Text>
+                    </View>
+
+                    <View style={styles.divider}/> 
+                    <View style={styles.itemDetails}>
+                        <Text style={styles.itemLabel}>Transaction Type</Text>
+                        <Text style={styles.itemvalue} >{details.type}</Text>
+                    </View>
+
+                    <View style={styles.divider}/> 
+                    <View style={styles.itemDetails}>
+                        <Text style={styles.itemLabel}>Description</Text>
+                        <Text style={styles.itemvalue} >{details.description}</Text>
+                    </View>
+
+                    <View style={styles.divider}/> 
+                    <View style={styles.itemDetails}>
+                        <Text style={styles.itemLabel}>Date / Time</Text>
+                        <Text style={styles.itemvalue} >{details.date} {details.time}</Text>
+                    </View>
                     
+                    <View style={styles.divider}/> 
+                    <View style={styles.itemDetails}>
+                        <Text style={styles.itemLabel}>Account</Text>
+                        <Text style={styles.itemvalue} >{details.name}</Text>
+                    </View>
                 </View>
             </View>
             }
@@ -59,8 +107,6 @@ const styles = StyleSheet.create({
     },
     body:{
         flex :9,
-        // justifyContent:'center',
-        // alignItems: 'center'
     },
     item: {
         backgroundColor: '#f9c2ff',
@@ -76,12 +122,36 @@ const styles = StyleSheet.create({
         flex:1
     },
     divider: {
-        width: width-50,
+        width: width-20,
         height: 1,
+        marginLeft:10,
+        justifyContent: 'center',
+        backgroundColor: '#DFE4EA'
         
-        backgroundColor: '#000'
-        // backgroundColor: '#DFE4EA'
-        
+    },
+    itemDetails: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        margin:20,
+    },
+    itemLabel: {
+       color: '#808080',
+       textTransform:'capitalize'
+    },
+    itemvalue: {
+       textTransform:'capitalize'
+    },
+    amountDebit: {
+       color: 'blue',
+       fontSize:26,
+       marginLeft:20,
+       marginVertical:20
+    },
+    amount: {
+       color: 'red',
+       fontSize:26,
+       marginLeft:20,
+       marginVertical:20
     }
 })
 
@@ -89,6 +159,6 @@ const mapToStateProps =(state:ApplicationState) =>({
     UserReducer: state.UserReducer
 })
 
-const DetailScreen = connect(mapToStateProps)(_DetailScreen)
+const DetailScreen = connect(mapToStateProps,{onUpdateVisible})(_DetailScreen)
 
 export {DetailScreen}

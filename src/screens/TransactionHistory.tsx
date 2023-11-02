@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import {View, FlatList, Text, StyleSheet,Dimensions, TouchableOpacity, Switch} from 'react-native'
 import Loading from '../utils/Loader';
-import { onFaceId, useNavigation } from '../utils';
+import { onFaceId } from '../utils';
 import { ListContent } from '../components/ListContent';
 import Icon from 'react-native-vector-icons/Entypo';
-import { Connect, connect } from 'react-redux';
-import { UserReducer } from '../redux/reducers/userReducer';
-import { UserState,onUpdateVisible, ApplicationState, UserAction } from '../redux';
+import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
+import { connect } from 'react-redux';
+import { UserState,onUpdateVisible, ApplicationState} from '../redux';
+import moment from 'moment';
+import { AddModal } from '../components/AddModals';
 
 const {width } = Dimensions.get('window');
 interface TransactionHistoryProps{
@@ -17,15 +19,27 @@ interface TransactionHistoryProps{
 
  const _TransactionHistory: React.FC<TransactionHistoryProps> = (props) => {
 
-    const { UserReducer, onUpdateVisible }= props
+    const { onUpdateVisible }= props
     
     const [isEnabled, setIsEnabled] = useState(false);
-    const customData = require('../utils/data.json') ;
+    const [sort, setSort] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
+    let customData = require('../utils/data.json') ;
 
-      useEffect(() => {
-        console.log('123',UserReducer.visible)
-
-    }, [UserReducer,isEnabled])
+    function filterDate(desc: boolean){
+        //Descending order (true)
+        const sorted = customData.sort((a: { date: any; time: any; },b: { date: any; time: any; })=>{
+            const myMomentObjectA = moment(a.date, 'MMM DD, YYYY')
+            const myMomentObjectB = moment(b.date, 'MMM DD, YYYY')
+            const dateA = myMomentObjectA.valueOf();
+            const dateB = myMomentObjectB.valueOf();
+            if(dateA > dateB){
+              return desc?-1:1; // return -1 here for DESC order
+            }
+            return desc?1:-1 // return 1 here for DESC Order
+          });
+          return sorted
+    }
 
     async function toogleswitch(checked: boolean){
         setIsEnabled(checked)
@@ -43,6 +57,12 @@ interface TransactionHistoryProps{
             onUpdateVisible(false)
         }
     }
+
+    function sorting(): void {
+        setSort(!sort)
+        filterDate(sort);
+    }
+
     return(
         <View style={{flex:1}}>
             {false?<Loading loading="true"/>
@@ -59,8 +79,12 @@ interface TransactionHistoryProps{
                         ios_backgroundColor="#3e3e3e"
                         onValueChange={toogleswitch}
                         value={isEnabled}
+                        style={{marginHorizontal:5}}
                     />
                 <Icon name='eye-with-line' size={20} />
+
+                <IconFontAwesome style={{marginRight:15,justifyContent:'flex-start'}} name='sort' size={25} onPress={()=>sorting()}/>
+
 
                 </View>
                 
@@ -78,10 +102,11 @@ interface TransactionHistoryProps{
                     // onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false; }}
                 />
                 {/* FAB */}
-                <TouchableOpacity style={styles.fab} onPress={()=>console.log('123')}>
+                <TouchableOpacity style={styles.fab} onPress={()=>setIsVisible(!isVisible)}>
                     <Icon name='plus' size={60}  />
                 </TouchableOpacity>
                 </View>
+                <AddModal visible={isVisible} onClick={setIsVisible}/>
             </View>
             }
         </View>

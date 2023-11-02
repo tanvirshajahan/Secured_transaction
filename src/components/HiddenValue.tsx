@@ -21,9 +21,9 @@ const HiddenValue :React.FC<HiddenValueProps> = (item)=> {
                 <>
                     {
                         item.type=='debit'?
-                            <Text style={{marginTop:10 , color:'#008ECC' }}>+RM{item.value}</Text>
+                            <Text style={{marginTop:10 , color:'#008ECC',fontSize:20 }}>+RM{item.value}</Text>
                             :
-                            <Text style={{marginTop:10,color:'red'}}>-RM{item.value}</Text>
+                            <Text style={{marginTop:10,color:'red',fontSize:20}}>-RM{item.value}</Text>
                     }
                 </>
                 

@@ -23,7 +23,6 @@ export async function onFaceId(){
             return(false)
 
         }else{
-            Alert.alert('Authenticated', 'Welcome!')
             return(true)
         }
     }catch (error){

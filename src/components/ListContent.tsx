@@ -18,21 +18,14 @@ const _ListContent: React.FC<TransactionListProps> = (value: any)=>{
 return(
     <TouchableOpacity onPress={()=> 
         {
-            // storage.setItem('DetailedInfo',JSON.stringify(item));
-            // goToScreen(item.props,'Service History Details');
-            navigate('transactionDetails', value.item);
-
-            // item.props.navigate('Transaction Details', {
-            //     value: item.props,
-            //   });
+            navigate('transactionDetails', { details: value.item})
         }
     }>
         <View style={[styles.cards,{ backgroundColor: '#fff'}]}>
             
             <View style={{ flex: 1,flexDirection: 'row',alignItems:'center',justifyContent: 'space-evenly' ,marginBottom:10, }}>
                 <View style={{ flex: 2,flexDirection: 'column',justifyContent: 'space-evenly', marginLeft:27}}>
-                    {/* <Text  style={{flex:2,}}>{name == 'Rejected'? 'Unsuccessful': statusName}</Text> */}
-                    <Text >{name}</Text>
+                    <Text style={{marginBottom:10,fontSize:20}}>{name}</Text>
                     <Text >{'account:'+description}</Text>
                 </View>  
                 <View style={{ flex: 1,flexDirection: 'column',justifyContent: 'space-evenly',marginHorizontal:10,borderLeftWidth:2, borderColor: '#fff'}}>
