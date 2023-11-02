@@ -1,13 +1,15 @@
 import { Dimensions, View,Text, StyleSheet, Modal, Alert, Pressable } from "react-native";
-import { ApplicationState } from "../redux";
+import { ApplicationState, onAddData } from "../redux";
 import { connect } from "react-redux";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import { useState } from "react";
+import { TransactionReducer } from "../redux/reducers/transactionReducer";
 const {width } = Dimensions.get('window');
 
 interface AddModalProps{ 
     visible: boolean,
     onClick: Function,
+    onAddItem: Function,
 
  }
 
@@ -18,6 +20,22 @@ const _AddModal: React.FC<AddModalProps> = (item: any)=>{
     const [transactionType, setTransactionType] = useState('');
     const [account, setAccount] = useState('');
 
+    function test(){
+        let a = []
+        let b = {
+            "id": '1',
+            "currency": amount,
+            "date": "Nov 7, 2023",
+            "name": name,
+            "time": "5:21 AM",
+            "type": transactionType,
+            "description": description
+        }
+
+        onAddData(b)
+
+        return a
+    }
     return(
         <View>
             <Modal
@@ -32,6 +50,11 @@ const _AddModal: React.FC<AddModalProps> = (item: any)=>{
                 }}>
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
+                    <Pressable
+                            style={[styles.button, styles.buttonClose]}
+                            onPress={() => item.onClick(!item.visible)}>
+                            <Text style={styles.textStyle}>Hide Modal</Text>
+                            </Pressable>
                         <ScrollView>
                             <Text style={styles.modalText}>Add Data!</Text>
                             <TextInput
@@ -62,10 +85,11 @@ const _AddModal: React.FC<AddModalProps> = (item: any)=>{
                                 placeholder="transactionType"
                                 placeholderTextColor={'#000'}
                             />                        
+                            
                             <Pressable
                             style={[styles.button, styles.buttonClose]}
-                            onPress={() => item.onClick(!item.visible)}>
-                            <Text style={styles.textStyle}>Hide Modal</Text>
+                            onPress={() => test()}>
+                            <Text style={styles.textStyle}>Add Data</Text>
                             </Pressable>
                         </ScrollView>
                     </View>
@@ -128,9 +152,10 @@ const styles = StyleSheet.create({
     });
 
     const mapToStateProps =(state:ApplicationState) =>({
-        UserReducer: state.UserReducer
+        UserReducer: state.UserReducer,
+        TransactionReducer: state.transactionReducer
     })
     
-    const AddModal = connect(mapToStateProps)(_AddModal)
+    const AddModal = connect(mapToStateProps,{onAddData})(_AddModal)
     
     export {AddModal}

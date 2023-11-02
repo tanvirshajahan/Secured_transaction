@@ -5,7 +5,7 @@ export interface TransactionDetails{
     time: string;
     name: string;
     description: string;
-    currency: number;
+    currency: string;
     type: string;
 }
 

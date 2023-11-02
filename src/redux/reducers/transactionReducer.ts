@@ -1,17 +1,26 @@
 
-import { UserAction } from '../actions/index'
-import { UserState } from '../models'
+import { TransactionAction } from '../actions/TransactionAction'
+import { TransactionDetails } from '../models'
 
-const initialState ={ 
-    visible : {} as boolean
+const initialState = { 
+    id: '' as string,
+    date: '' as string,
+    time: '' as string,
+    name: '' as string,
+    description: '' as string,
+    currency: '' as string,
+    type: '' as string
+
 }
 
-const TransactionReducer =(state: UserState = initialState, action: UserAction) =>{
+const TransactionReducer =(state: TransactionDetails = initialState, action: TransactionAction) =>{
+    console.log('reduver')
+    if(action.type == "ON_ADD_DATA"){
+        console.log('reduver',action)
 
-    if(action.type == "ON_UPDATE_VISIBLE"){
         return{
             ...state,
-            visible: action.payload
+            data: action.payload
         }
     }else{
         return(state)

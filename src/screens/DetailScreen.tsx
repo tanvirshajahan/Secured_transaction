@@ -5,11 +5,12 @@ import {onFaceId} from '../utils/Authentication'
 import { ApplicationState, TransactionDetails, UserState, onUpdateVisible } from '../redux';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/Entypo';
-import { useNavigation } from '../utils';
+import { getData, useNavigation } from '../utils';
 const {width } = Dimensions.get('window');
 
 interface TransactionDetailsProps{
     UserReducer: UserState,
+    TransactionReducer: TransactionDetails,
     navigation: { getParam: Function, goBack: Function}
 
 }
@@ -37,6 +38,7 @@ const _DetailScreen: React.FC<TransactionDetailsProps> = (props) => {
        
     useEffect(() => {
         checking()
+        console.log('123',props)
     }, [])
 
     return(
@@ -156,7 +158,9 @@ const styles = StyleSheet.create({
 })
 
 const mapToStateProps =(state:ApplicationState) =>({
-    UserReducer: state.UserReducer
+    UserReducer: state.UserReducer,
+    TransactionReducer: state.transactionReducer
+
 })
 
 const DetailScreen = connect(mapToStateProps,{onUpdateVisible})(_DetailScreen)

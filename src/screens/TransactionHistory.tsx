@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { UserState,onUpdateVisible, ApplicationState} from '../redux';
 import moment from 'moment';
 import { AddModal } from '../components/AddModals';
+import {storeData, getData} from '../utils'
 
 const {width } = Dimensions.get('window');
 interface TransactionHistoryProps{
@@ -16,15 +17,19 @@ interface TransactionHistoryProps{
     onUpdateVisible: Function
 }
 
-
- const _TransactionHistory: React.FC<TransactionHistoryProps> = (props) => {
+const _TransactionHistory: React.FC<TransactionHistoryProps> = (props) => {
 
     const { onUpdateVisible }= props
     
     const [isEnabled, setIsEnabled] = useState(false);
     const [sort, setSort] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
+    const [data, setData] = useState([]);
+    const [vehicleData, setVehicleData] = useState<any[]>([]);
+
     let customData = require('../utils/data.json') ;
+
+
 
     function filterDate(desc: boolean){
         //Descending order (true)
@@ -63,6 +68,25 @@ interface TransactionHistoryProps{
         filterDate(sort);
     }
 
+    async function gatherData() {
+        storeData(customData,'data')
+       let GatheredData =  await getData('data')
+       setData(GatheredData)
+    //    console.log([...data,data],'a')
+    //    console.log(vehicleData,'a')
+    //    console.log(customData,'a')
+    }
+
+    useEffect(() => {
+        gatherData();
+        // console.log(vehicleData,'a')
+        
+    }, [])
+
+    function AddData (value: any){
+        console.log('123zz',value)
+    }
+
     return(
         <View style={{flex:1}}>
             {false?<Loading loading="true"/>
@@ -81,11 +105,8 @@ interface TransactionHistoryProps{
                         value={isEnabled}
                         style={{marginHorizontal:5}}
                     />
-                <Icon name='eye-with-line' size={20} />
-
-                <IconFontAwesome style={{marginRight:15,justifyContent:'flex-start'}} name='sort' size={25} onPress={()=>sorting()}/>
-
-
+                    <Icon name='eye-with-line' size={20} />
+                    <IconFontAwesome style={{marginRight:15,justifyContent:'flex-start'}} name='sort' size={25} onPress={()=>sorting()}/>
                 </View>
                 
                 <View style={styles.body}>
@@ -106,7 +127,7 @@ interface TransactionHistoryProps{
                     <Icon name='plus' size={60}  />
                 </TouchableOpacity>
                 </View>
-                <AddModal visible={isVisible} onClick={setIsVisible}/>
+                <AddModal visible={isVisible} onClick={setIsVisible} onAddItem={AddData}/>
             </View>
             }
         </View>
@@ -166,3 +187,5 @@ const mapToStateProps =(state:ApplicationState) =>({
 const TransactionHistory = connect(mapToStateProps, {onUpdateVisible})(_TransactionHistory)
 
 export {TransactionHistory}
+
+
