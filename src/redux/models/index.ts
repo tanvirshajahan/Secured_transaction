@@ -7,5 +7,9 @@ export interface TransactionDetails{
     description: string;
     currency: number;
     type: string;
+}
+
+export interface UserState{
+    visible: boolean;
 
 }
