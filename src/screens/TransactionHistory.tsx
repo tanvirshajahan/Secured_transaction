@@ -6,7 +6,7 @@ import { ListContent } from '../components/ListContent';
 import Icon from 'react-native-vector-icons/Entypo';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
-import { UserState,onUpdateVisible, ApplicationState, TransactionDetails, store} from '../redux';
+import { UserState,onUpdateVisible, ApplicationState, TransactionDetails, store, onAddData} from '../redux';
 import moment from 'moment';
 import { AddModal } from '../components/AddModals';
 import {storeData, getData} from '../utils'
@@ -14,7 +14,9 @@ import {storeData, getData} from '../utils'
 const {width } = Dimensions.get('window');
 interface TransactionHistoryProps{
     UserReducer: UserState,
-    onUpdateVisible: Function
+    TransactionRecuder: TransactionDetails,
+    onUpdateVisible: Function,
+    onAddData: Function,
 }
 
 const _TransactionHistory: React.FC<TransactionHistoryProps> = (props) => {
@@ -66,7 +68,6 @@ const _TransactionHistory: React.FC<TransactionHistoryProps> = (props) => {
     }
 
     function sorting(): void {
-        console.log('aas',sort)
         setSort(!sort)
         filterDate(sort);
     }
@@ -94,7 +95,6 @@ const _TransactionHistory: React.FC<TransactionHistoryProps> = (props) => {
         temporary = [newData,...data]
         setTempData(temporary)
         getDataStorate()
-
     }
 
     async function getDataStorate(){
@@ -240,10 +240,11 @@ const styles = StyleSheet.create({
     });
 
 const mapToStateProps =(state:ApplicationState) =>({
-    UserReducer: state.UserReducer
+    UserReducer: state.UserReducer,
+    TransactionReducer: state.TransactionReducer,
 })
 
-const TransactionHistory = connect(mapToStateProps, {onUpdateVisible})(_TransactionHistory)
+const TransactionHistory = connect(mapToStateProps, {onUpdateVisible, onAddData})(_TransactionHistory)
 
 export {TransactionHistory}
 

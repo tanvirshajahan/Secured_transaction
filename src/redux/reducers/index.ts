@@ -3,7 +3,7 @@ import { TransactionReducer } from "./transactionReducer";
 import { UserReducer } from "./userReducer";
 
 const rootReducer = combineReducers({
-    transactionReducer: TransactionReducer,
+    TransactionReducer: TransactionReducer,
     UserReducer: UserReducer,
 })
 

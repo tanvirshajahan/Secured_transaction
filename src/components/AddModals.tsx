@@ -19,11 +19,9 @@ const _AddModal: React.FC<AddModalProps> = (item: any)=>{
     const [description, setDescription] = useState('');
     const [name, setName] = useState('');
     const [transactionType, setTransactionType] = useState('');
-    const [account, setAccount] = useState('');
 
     async function AddItem(){
-        let a = []
-        let b = {
+        let newData = {
             "id": '1',
             "currency": amount,
             "date": "Nov 7, 2023",
@@ -33,10 +31,10 @@ const _AddModal: React.FC<AddModalProps> = (item: any)=>{
             "description": description
         }
 
-        onAddData(b)
-        await storeData(b,'addData')
+        onAddData(newData)
         item.onAddItem()
         item.onClick(!item.visible);
+        await storeData(newData,'addData')
     }
     return(
         <View>

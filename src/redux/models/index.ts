@@ -8,7 +8,6 @@ export interface TransactionDetails{
     currency: string;
     type: string;
 }
-
 export interface UserState{
     visible: boolean;
 
