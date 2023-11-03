@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import {View, FlatList, Text, StyleSheet,Dimensions, TouchableOpacity, Switch} from 'react-native'
+import {View, FlatList, Text, StyleSheet,Dimensions, TouchableOpacity, Switch, Modal, Pressable, Alert, ScrollView, TextInput} from 'react-native'
 import Loading from '../utils/Loader';
 import { onFaceId } from '../utils';
 import { ListContent } from '../components/ListContent';
 import Icon from 'react-native-vector-icons/Entypo';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
-import { UserState,onUpdateVisible, ApplicationState} from '../redux';
+import { UserState,onUpdateVisible, ApplicationState, TransactionDetails, store} from '../redux';
 import moment from 'moment';
 import { AddModal } from '../components/AddModals';
 import {storeData, getData} from '../utils'
@@ -25,17 +25,19 @@ const _TransactionHistory: React.FC<TransactionHistoryProps> = (props) => {
     const [sort, setSort] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
     const [data, setData] = useState([]);
-    const [vehicleData, setVehicleData] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [checker, setChecker] = useState(false);
+    const [tempData, setTempData] = useState([]);
 
     let customData = require('../utils/data.json') ;
-
-
+    storeData(customData,'data')
 
     function filterDate(desc: boolean){
         //Descending order (true)
-        const sorted = customData.sort((a: { date: any; time: any; },b: { date: any; time: any; })=>{
+        const sorted = data.sort((a: { date: any; time: any; },b: { date: any; time: any; })=>{
             const myMomentObjectA = moment(a.date, 'MMM DD, YYYY')
             const myMomentObjectB = moment(b.date, 'MMM DD, YYYY')
+
             const dateA = myMomentObjectA.valueOf();
             const dateB = myMomentObjectB.valueOf();
             if(dateA > dateB){
@@ -64,27 +66,42 @@ const _TransactionHistory: React.FC<TransactionHistoryProps> = (props) => {
     }
 
     function sorting(): void {
+        console.log('aas',sort)
         setSort(!sort)
         filterDate(sort);
     }
 
     async function gatherData() {
-        storeData(customData,'data')
-       let GatheredData =  await getData('data')
-       setData(GatheredData)
-    //    console.log([...data,data],'a')
-    //    console.log(vehicleData,'a')
-    //    console.log(customData,'a')
+        setIsLoading(true)
+        setTimeout(async function(){
+            if(!checker){
+                let GatheredData =  await getData('data')
+                setData(GatheredData)
+            }
+            setChecker(true)
+            setIsLoading(false)
+            getDataStorate()
+        }, 1000)
     }
 
     useEffect(() => {
-        gatherData();
-        // console.log(vehicleData,'a')
-        
+        gatherData();        
     }, [])
 
-    function AddData (value: any){
-        console.log('123zz',value)
+    async function AddData (value: any){
+        let newData = await getData('addData')
+        let temporary: any = []
+        temporary = [newData,...data]
+        setTempData(temporary)
+        getDataStorate()
+
+    }
+
+    async function getDataStorate(){
+        
+        if(tempData.length!=0){
+            setData(tempData)
+        }
     }
 
     return(
@@ -98,7 +115,6 @@ const _TransactionHistory: React.FC<TransactionHistoryProps> = (props) => {
                 <View style={styles.switches}>
                     <Icon name='eye' size={20}/>
                     <Switch
-                        // trackColor={{false: '#767577', true: '#81b0ff'}}
                         thumbColor={isEnabled ? 'green' : '#f4f3f4'}
                         ios_backgroundColor="#3e3e3e"
                         onValueChange={toogleswitch}
@@ -113,14 +129,10 @@ const _TransactionHistory: React.FC<TransactionHistoryProps> = (props) => {
                 <FlatList 
                     style={{ width: '100%',height:10,zIndex:-10}}
                     keyExtractor={(item, index) => index.toString()}
-                    data={customData}
+                    data={data}
                     renderItem={({ item  }) => <ListContent item={item}  /> }
-                    // ItemSeparatorComponent={() => <View style={styles.separator} />}
-                    //onScrollEndDrag={() => this.loadMoreData()}
-                    // ListFooterComponent={this.renderFooter.bind(this)}
-                    // onEndReached={this.onEndReached.bind(this)}
-                    // onEndReachedThreshold={0.5}
-                    // onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false; }}
+                    onRefresh={gatherData}
+                    refreshing={isLoading}
                 />
                 {/* FAB */}
                 <TouchableOpacity style={styles.fab} onPress={()=>setIsVisible(!isVisible)}>
@@ -132,7 +144,6 @@ const _TransactionHistory: React.FC<TransactionHistoryProps> = (props) => {
             }
         </View>
     )
-
 }
 
 const styles = StyleSheet.create({
@@ -177,8 +188,56 @@ const styles = StyleSheet.create({
         marginLeft:20,
         marginBottom:10,
 
-    }
-})
+    }, centeredView: {
+        flex: 1,
+       
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 22,
+        },
+    modalView: {
+            width:300,
+            height:300,
+            margin: 20,
+            backgroundColor: 'white',
+            borderRadius: 20,
+            padding: 35,
+            alignItems: 'center',
+            shadowColor: '#000',
+            shadowOffset: {
+                    width: 0,
+                    height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 4,
+            elevation: 5,
+        },
+    button: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2,
+    },
+       
+    buttonClose: {
+        backgroundColor: '#2196F3',
+    },
+    textStyle: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: 'center',
+    },
+    input: {
+            height: 40,
+            width:200,
+            margin: 12,
+            borderWidth: 1,
+            padding: 10,
+    },
+    });
 
 const mapToStateProps =(state:ApplicationState) =>({
     UserReducer: state.UserReducer
@@ -187,5 +246,4 @@ const mapToStateProps =(state:ApplicationState) =>({
 const TransactionHistory = connect(mapToStateProps, {onUpdateVisible})(_TransactionHistory)
 
 export {TransactionHistory}
-
 

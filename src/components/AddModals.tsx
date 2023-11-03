@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import { useState } from "react";
 import { TransactionReducer } from "../redux/reducers/transactionReducer";
+import { getData, storeData } from "../utils";
 const {width } = Dimensions.get('window');
 
 interface AddModalProps{ 
@@ -20,7 +21,7 @@ const _AddModal: React.FC<AddModalProps> = (item: any)=>{
     const [transactionType, setTransactionType] = useState('');
     const [account, setAccount] = useState('');
 
-    function test(){
+    async function AddItem(){
         let a = []
         let b = {
             "id": '1',
@@ -33,8 +34,9 @@ const _AddModal: React.FC<AddModalProps> = (item: any)=>{
         }
 
         onAddData(b)
-
-        return a
+        await storeData(b,'addData')
+        item.onAddItem()
+        item.onClick(!item.visible);
     }
     return(
         <View>
@@ -53,7 +55,7 @@ const _AddModal: React.FC<AddModalProps> = (item: any)=>{
                     <Pressable
                             style={[styles.button, styles.buttonClose]}
                             onPress={() => item.onClick(!item.visible)}>
-                            <Text style={styles.textStyle}>Hide Modal</Text>
+                            <Text style={styles.textStyle}>  X  </Text>
                             </Pressable>
                         <ScrollView>
                             <Text style={styles.modalText}>Add Data!</Text>
@@ -61,34 +63,34 @@ const _AddModal: React.FC<AddModalProps> = (item: any)=>{
                                 style={styles.input}
                                 onChangeText={setName}
                                 value={name}
-                                placeholder="amnameount"
-                                placeholderTextColor={'#000'}
+                                placeholder="name"
+                                placeholderTextColor={'grey'}
                             />                        
                             <TextInput
                                 style={styles.input}
                                 onChangeText={setAmount}
                                 value={amount}
                                 placeholder="amount"
-                                placeholderTextColor={'#000'}
+                                placeholderTextColor={'grey'}
                             />                        
                             <TextInput
                                 style={styles.input}
                                 onChangeText={setDescription}
                                 value={description}
                                 placeholder="description"
-                                placeholderTextColor={'#000'}
+                                placeholderTextColor={'grey'}
                             />                        
                             <TextInput
                                 style={styles.input}
                                 onChangeText={setTransactionType}
                                 value={transactionType}
                                 placeholder="transactionType"
-                                placeholderTextColor={'#000'}
+                                placeholderTextColor={'grey'}
                             />                        
                             
                             <Pressable
-                            style={[styles.button, styles.buttonClose]}
-                            onPress={() => test()}>
+                            style={[styles.button, styles.buttonSubmit]}
+                            onPress={() => AddItem()}>
                             <Text style={styles.textStyle}>Add Data</Text>
                             </Pressable>
                         </ScrollView>
@@ -109,12 +111,12 @@ const styles = StyleSheet.create({
         },
     modalView: {
             width:300,
-            height:300,
+            height:400,
             margin: 20,
             backgroundColor: 'white',
             borderRadius: 20,
             padding: 35,
-            alignItems: 'center',
+            // alignItems: 'center',
             shadowColor: '#000',
             shadowOffset: {
                     width: 0,
@@ -131,7 +133,12 @@ const styles = StyleSheet.create({
     },
        
     buttonClose: {
+        backgroundColor: 'red',
+        alignSelf: 'flex-end'
+    },
+    buttonSubmit: {
         backgroundColor: '#2196F3',
+        
     },
     textStyle: {
         color: 'white',

@@ -14,9 +14,7 @@ const initialState = {
 }
 
 const TransactionReducer =(state: TransactionDetails = initialState, action: TransactionAction) =>{
-    console.log('reduver')
     if(action.type == "ON_ADD_DATA"){
-        console.log('reduver',action)
 
         return{
             ...state,

@@ -38,7 +38,6 @@ const _DetailScreen: React.FC<TransactionDetailsProps> = (props) => {
        
     useEffect(() => {
         checking()
-        console.log('123',props)
     }, [])
 
     return(
