@@ -19,7 +19,6 @@ const _AddModal: React.FC<AddModalProps> = (item: any)=>{
     const [description, setDescription] = useState('');
     const [name, setName] = useState('');
     const [transactionType, setTransactionType] = useState('');
-
     async function AddItem(){
         let newData = {
             "id": '1',
@@ -27,7 +26,7 @@ const _AddModal: React.FC<AddModalProps> = (item: any)=>{
             "date": "Nov 7, 2023",
             "name": name,
             "time": "5:21 AM",
-            "type": transactionType,
+            "type": transactionType.toLowerCase(),
             "description": description
         }
 
@@ -158,7 +157,7 @@ const styles = StyleSheet.create({
 
     const mapToStateProps =(state:ApplicationState) =>({
         UserReducer: state.UserReducer,
-        TransactionReducer: state.transactionReducer
+        TransactionReducer: state.TransactionReducer
     })
     
     const AddModal = connect(mapToStateProps,{onAddData})(_AddModal)
